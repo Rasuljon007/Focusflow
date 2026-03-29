@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kunlik Reja • Bildirishnomalar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body { font-family: 'Inter', system_ui, sans-serif; }
+    .glass { background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); }
+    .dark .glass { background: rgba(31,41,55,0.8); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-gray-950 dark:to-gray-900 min-h-screen">
+
+  <div class="max-w-7xl mx-auto p-6">
+    <!-- Header + Bildirishnoma tugmasi -->
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl">📅</div>
+        <h1 class="text-4xl font-bold">Kunlik Reja</h1>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <button onclick="requestNotificationPermission()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 font-medium">
+          <i class="fas fa-bell"></i> Bildirishnomalarni yoqish
+        </button>
+        <button onclick="toggleTheme()" class="p-3 rounded-2xl glass">
+          <i class="fas fa-moon text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Test bildirishnoma tugmasi -->
+    <div class="glass rounded-3xl p-6 mb-8 text-center">
+      <button onclick="sendTestNotification()" 
+              class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl text-lg font-medium flex items-center gap-3 mx-auto">
+        <i class="fas fa-paper-plane"></i> Test bildirishnoma jo'natish
+      </button>
+      <p class="text-sm text-gray-500 mt-3">Brauzer ruxsat bergan bo'lsa, tizim bildirishnomasi chiqadi</p>
+    </div>
+
+    <!-- Qolgan oldingi kod (Add task, Task list, Pomodoro...) -->
+    <!-- ... (oldingi mukammal versiyadagi qolgan qismlarni shu yerga qo‘shing yoki alohida saqlang) ... -->
+
+  </div>
+
+  <script>
+    // ================== BILDIRISHNOMA FUNKSIYALARI ==================
+    async function requestNotificationPermission() {
+      if (!("Notification" in window)) {
+        alert("Sizning brauzeringiz bildirishnomalarni qo'llab-quvvatlamaydi.");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        alert("Bildirishnomalar allaqachon yoqilgan! ✅");
+      } else if (Notification.permission !== "denied") {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          alert("Bildirishnomalar muvaffaqiyatli yoqildi! 🎉");
+          sendTestNotification();
+        } else {
+          alert("Bildirishnomalarga ruxsat bermadingiz.");
+        }
+      }
+    }
+
+    function sendTestNotification() {
+      if (Notification.permission !== "granted") {
+        alert("Avval bildirishnomalarni yoqing!");
+        return;
+      }
+
+      const notification = new Notification("Kunlik Reja", {
+        body: "Bugungi vazifalaringizni tekshirib ko'ring! 📋",
+        icon: "https://cdn-icons-png.flaticon.com/512/3658/3658756.png", // yoki o'zingizning logo URL
+        badge: "https://cdn-icons-png.flaticon.com/512/3658/3658756.png",
+        tag: "daily-task-reminder", // bir xil bildirishnomalarni birlashtirish uchun
+        requireInteraction: false // mobil uchun
+      });
+
+      // Bildirishnomani bosganda nima bo'lishini belgilash
+      notification.onclick = function() {
+        window.focus();
+        alert("Kunlik Reja ochildi! Vazifalaringizni bajarishga tayyormisiz?");
+      };
+    }
+
+    // ================== Mavzu o'zgartirish va boshqa funksiyalar ==================
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    // Oddiy test: Sahifa yuklanganda eslatma
+    window.onload = () => {
+      console.log("%cKunlik Reja yuklandi. Bildirishnomalarni sinab ko'ring!", "color: #6366f1; font-weight: bold");
+    };
+  </script>
+</body>
+</html>
